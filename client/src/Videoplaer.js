@@ -66,7 +66,7 @@ const VideoList = () => {
 
 const VideoPlayer = () => {
   const { id } = useParams();
-  const videoUrl = `http://localhost:5000${decodeURIComponent(id)}`;
+  const videoUrl = `${decodeURIComponent(id)}`;
 
   return (
     <Box sx={{ maxWidth: 800, margin: 'auto', padding: 3, textAlign: 'center' }}>

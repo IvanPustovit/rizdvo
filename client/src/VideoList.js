@@ -14,7 +14,7 @@ const VideoList = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/videos`);
+        const response = await axios.get(`/api/videos`);
         setVideos(response.data);
       } catch (err) {
         console.error('Помилка завантаження списку відео:', err);

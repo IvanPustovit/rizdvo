@@ -36,7 +36,7 @@ const UserVideoUpload = () => {
     try {
       setLoading(true);
       setSuccessMessage('');
-      const response = await axios.post(`${apiUrl}/api/upload`, formData, {
+      const response = await axios.post(`/api/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
