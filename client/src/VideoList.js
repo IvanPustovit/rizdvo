@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Box, Typography, List, ListItem, ListItemText, CircularProgress, Button } from '@mui/material';
 
-const apiUrl = "http://localhost:5000"
 
 const VideoList = () => {
   const [videos, setVideos] = useState([]);
@@ -72,7 +71,7 @@ const VideoList = () => {
             {selectedVideo.title}
           </Typography>
           <video
-            src={`http://localhost:5000${selectedVideo.filePath}`}
+            src={`/${selectedVideo.filePath}`}
             controls
             style={{ width: '100%' }}
           />

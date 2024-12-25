@@ -9,7 +9,7 @@ import VideoList from './VideoList';
 const Input = styled('input')({
   display: 'none',
 });
-const apiUrl = "http://localhost:5000"
+
 
 const UserVideoUpload = () => {
   const [video, setVideo] = useState(null);
