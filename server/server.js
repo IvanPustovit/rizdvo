@@ -3,6 +3,7 @@ const path = require('path');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
@@ -33,6 +34,26 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+const sendTelegramNotification = async (message) => {
+  const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+    console.error('Не задані змінні TELEGRAM_BOT_TOKEN або TELEGRAM_CHAT_ID.');
+    return;
+  }
+
+  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+  try {
+    await axios.post(url, {
+      chat_id: TELEGRAM_CHAT_ID,
+      text: message,
+    });
+  } catch (error) {
+    console.error('Помилка надсилання повідомлення в Telegram:', error.response?.data || error.message);
+  }
+};
+
 // Роут для завантаження відео
 app.post('/api/upload', upload.single('video'), async (req, res) => {
   const { title, user } = req.body;
@@ -46,6 +67,11 @@ app.post('/api/upload', upload.single('video'), async (req, res) => {
   });
 
   await video.save();
+
+  // Надсилання сповіщення в Telegram
+  const message = `Нове відео завантажено:\nНазва: ${title}\nКористувач: ${user}`;
+  sendTelegramNotification(message);
+
   res.status(200).json(video);
 });
 
