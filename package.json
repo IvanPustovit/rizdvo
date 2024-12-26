@@ -4,7 +4,7 @@
   "scripts": {
     "start": "node server/server.js",
     "start:client": "vite",
-    "build": "npm run build:client",
+    "build": "vite build --config client/vite.config.js",
     "build:client": "vite build --config client/vite.config.js",
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "dev:client": "vite --config client/vite.config.js",
