@@ -32,7 +32,7 @@ const VideoList = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await axios.get(`http://localhost:50000/api/videos`);
+        const response = await axios.get(`/api/videos`);
 
         setVideos(response.data);
       } catch (err) {

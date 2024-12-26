@@ -35,7 +35,7 @@ const VideoUpload = () => {
       setLoading(true);
       setSuccessMessage("");
       const response = await axios.post(
-        "http://localhost:50000/api/upload",
+        "/api/upload",
         formData,
         {
           headers: {
