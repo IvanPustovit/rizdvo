@@ -4,6 +4,9 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const axios = require('axios');
+const { createReadStream } = require("node:fs");
+const FormData = require("form-data");
+
 require('dotenv').config();
 
 const app = express();
@@ -34,7 +37,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-const sendTelegramNotification = async (message) => {
+const sendTelegramVideoNotification = async (message,videoPath) => {
   const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
@@ -43,12 +46,20 @@ const sendTelegramNotification = async (message) => {
     return;
   }
 
-  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendVideo`;
+  const videoFullPath = path.join(__dirname, videoPath);
+
   try {
-    await axios.post(url, {
-      chat_id: TELEGRAM_CHAT_ID,
-      text: message,
+    const formData = new FormData();
+    formData.append('chat_id', TELEGRAM_CHAT_ID);
+    formData.append('caption', message);
+    formData.append('video', createReadStream(videoFullPath));
+
+    await axios.post(url, formData, {
+      headers: formData.getHeaders(),
     });
+
+    console.log('Повідомлення з відео успішно надіслано');
   } catch (error) {
     console.error('Помилка надсилання повідомлення в Telegram:', error.response?.data || error.message);
   }
@@ -68,9 +79,10 @@ app.post('/api/upload', upload.single('video'), async (req, res) => {
 
   await video.save();
 
-  // Надсилання сповіщення в Telegram
+  // Відправка повідомлення в Telegram з текстом і відео
   const message = `Нове відео завантажено:\nНазва: ${title}\nКористувач: ${user}`;
-  sendTelegramNotification(message);
+  const videoPath = video.filePath; // Відносний шлях до відео
+  sendTelegramVideoNotification(message, videoPath);
 
   res.status(200).json(video);
 });
