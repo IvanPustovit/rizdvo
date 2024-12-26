@@ -21,7 +21,7 @@ const VideoPlayer = ({video}) => {
   return (
     <Box sx={{ mt: 4, textAlign: 'center' }}>
       <Typography variant="h4">{video.title}</Typography>
-      <video controls style={{ width: '100%' }} src={`/${video.filePath}`} />
+      <video controls style={{ width: '100%' }} src={`${window.location.origin}${video.filePath}`} />
     </Box>
   );
 };
